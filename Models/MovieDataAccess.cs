@@ -11,9 +11,9 @@ namespace MovieData.Models
     {
         string connectionString = "Server=FSIND-LT-11;Database=DbContext;Trusted_Connection=True";
 
-        public IEnumerable<Movie> GetAllMovie()
+        public List<MvcMovieContext> GetAllMovies()
         {
-            List<Movie> lstMovie = new List<Movie>();
+            List<MvcMovieContext> lstMovie = new List<MvcMovieContext>();
 
             using (SqlConnection con = new SqlConnection(connectionString))
             {
@@ -25,9 +25,9 @@ namespace MovieData.Models
 
                 while (rdr.Read())
                 {
-                    Movie movie = new Movie();
+                    MvcMovieContext movie = new MvcMovieContext();
 
-                    movie.ID = Convert.ToInt32(rdr["ID"]);
+                    movie.Id = Convert.ToInt32(rdr["ID"]);
                     movie.Title = rdr["Title"].ToString();
                     movie.Genre = rdr["Genre"].ToString();
                     movie.ReleseDate = rdr["ReleseDate"].ToString();
@@ -39,7 +39,7 @@ namespace MovieData.Models
             return lstMovie;
         }
 
-        public void AddMovie(Movie movie)
+        public void AddMovie(MvcMovieContext movie)
         {
             using (SqlConnection con = new SqlConnection(connectionString))
             {
@@ -56,14 +56,14 @@ namespace MovieData.Models
                 con.Close();
             }
         }
-        public void UpdateMovie(Movie movie)
+        public void UpdateMovie(MvcMovieContext movie)
         {
             using (SqlConnection con = new SqlConnection(connectionString))
             {
                 SqlCommand cmd = new SqlCommand("spUpdateMovie", con);
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.AddWithValue("@ID", movie.ID);
+                cmd.Parameters.AddWithValue("@ID", movie.Id);
                 cmd.Parameters.AddWithValue("@Title", movie.Title);
                 cmd.Parameters.AddWithValue("@Genre", movie.Genre);
                 cmd.Parameters.AddWithValue("@ReleseDate", movie.ReleseDate);
@@ -75,10 +75,10 @@ namespace MovieData.Models
             }
         }
 
-        public Movie GetMovieData(int? id)
+        public MvcMovieContext GetMovieData(int? id)
         {
 
-            Movie movie = new Movie();
+            MvcMovieContext movie = new MvcMovieContext();
             using (SqlConnection con = new SqlConnection(connectionString))
             {
                 string sqlQuery = "SELECT * FROM MvcMovieContext WHERE ID= " + id;
@@ -89,7 +89,7 @@ namespace MovieData.Models
 
                 while (rdr.Read())
                 {
-                    movie.ID = Convert.ToInt32(rdr["ID"]);
+                    movie.Id = Convert.ToInt32(rdr["ID"]);
                     movie.Title = rdr["Title"].ToString();
                     movie.Genre = rdr["Genre"].ToString();
                     movie.ReleseDate = rdr["ReleseDate"].ToString();

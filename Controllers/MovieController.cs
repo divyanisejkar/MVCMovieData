@@ -10,12 +10,20 @@ namespace MovieData.Controllers
 
     public class MovieController : Controller
     {
+       // MovieDataAcessEF movieDataAccess;
         MovieDataAccess movieDataAccess = new MovieDataAccess();
+
+        public MovieController(DbContextContext dbContext)
+        {
+            //movieDataAccess = new MovieDataAcessEF(dbContext);
+        }
+          
+
         public IActionResult Index()
         {
-            MovieDataAccess movieDataAccess = new MovieDataAccess();
-            List<Movie> lstMovie = new List<Movie>();
-            lstMovie = movieDataAccess.GetAllMovie().ToList();
+           // MovieDataAccess movieDataAccess = new MovieDataAccess();
+            List<MvcMovieContext> lstMovie = new List<MvcMovieContext>();
+            lstMovie = movieDataAccess.GetAllMovies();
 
             return View(lstMovie);
         }
@@ -27,16 +35,19 @@ namespace MovieData.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind] Movie movie)
+        public IActionResult Create([Bind] MvcMovieContext movie)
         {
-            MovieDataAccess movieDataAccess = new MovieDataAccess();
+           // MovieDataAccess movieDataAccess = new MovieDataAccess();
             if (ModelState.IsValid)
             {
+
+               
                 movieDataAccess.AddMovie(movie);
-                return RedirectToAction("Index","Movie");
+                return RedirectToAction(nameof(Index));
             }
             return View(movie);
         }
+      
         [HttpGet]
         public IActionResult Edit(int? id)
         {
@@ -44,7 +55,7 @@ namespace MovieData.Controllers
             {
                 return NotFound();
             }
-            Movie movie = movieDataAccess.GetMovieData(id);
+            MvcMovieContext movie = movieDataAccess.GetMovieData(id);
 
             if (movie == null)
             {
@@ -55,9 +66,9 @@ namespace MovieData.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind]Movie movie)
+        public IActionResult Edit(int id, [Bind]MvcMovieContext movie)
         {
-            if (id != movie.ID)
+            if (id != movie.Id)
             {
                 return NotFound();
             }
@@ -76,7 +87,7 @@ namespace MovieData.Controllers
             {
                 return NotFound();
             }
-            Movie movie = movieDataAccess.GetMovieData(id);
+            MvcMovieContext movie = movieDataAccess.GetMovieData(id);
 
             if (movie == null)
             {
@@ -92,7 +103,7 @@ namespace MovieData.Controllers
             {
                 return NotFound();
             }
-            Movie movie = movieDataAccess.GetMovieData(id);
+            MvcMovieContext movie = movieDataAccess.GetMovieData(id);
 
             if (movie == null)
             {

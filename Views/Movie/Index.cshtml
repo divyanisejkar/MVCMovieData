@@ -1,5 +1,5 @@
 ﻿
-@model IEnumerable<MovieData.Models.Movie>
+@model IEnumerable<MovieData.Models.MvcMovieContext>
 
 
 @{
@@ -38,9 +38,9 @@
                     @Html.DisplayFor(modelItem => item.ReleseDate)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                    <a asp-action="Detail" asp-route-id="@item.ID">Detail</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Detail" asp-route-id="@item.Id">Detail</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
             </tr>
 
