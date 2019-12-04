@@ -2,34 +2,59 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MovieData.Models;
+using MediatR;
+using AutoMapper;
+
 
 namespace MovieData.Controllers
 {
 
     public class MovieController : Controller
     {
-       // MovieDataAcessEF movieDataAccess;
-        MovieDataAccess movieDataAccess = new MovieDataAccess();
+        // MovieDataAcessEF movieDataAccess;
+        // MovieDataAccess movieDataAccess = new MovieDataAccess();
 
-        public MovieController(DbContextContext dbContext)
+       private readonly IMediator _mediator;
+        
+        IMovieDataAccess Imovie;
+
+        public MovieController(DbContextContext dbContext, IMediator mediator)
         {
-            //movieDataAccess = new MovieDataAcessEF(dbContext);
+            Imovie = new MovieDataAccess();
+            _mediator = mediator;
         }
           
 
         public IActionResult Index()
         {
-           // MovieDataAccess movieDataAccess = new MovieDataAccess();
-            List<MvcMovieContext> lstMovie = new List<MvcMovieContext>();
-            lstMovie = movieDataAccess.GetAllMovies();
+            if(checkInvalidSession())
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
-            return View(lstMovie);
+            // var result = _mediator.Send(new GetAllMoviesRequest());
+
+            // List<MvcMovieContext> sucess= result.Result.Success;
+
+            return View(_mediator.Send(new GetAllMoviesRequest()).Result.Success);
+
+
+          /*  List<MvcMovieContext> lstMovie = new List<MvcMovieContext>();
+            lstMovie = Imovie.GetAllMovies();
+
+            return View(lstMovie);*/
+
         }
         [HttpGet]
         public IActionResult Create()
         {
+            if (checkInvalidSession())
+            {
+                return RedirectToAction( "Index", "Home");
+            }
             return View();
         }
 
@@ -38,14 +63,13 @@ namespace MovieData.Controllers
         public IActionResult Create([Bind] MvcMovieContext movie)
         {
            // MovieDataAccess movieDataAccess = new MovieDataAccess();
-            if (ModelState.IsValid)
+            if (checkInvalidSession())
             {
-
-               
-                movieDataAccess.AddMovie(movie);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Home","Index");
             }
-            return View(movie);
+            Imovie.AddMovie(movie);
+            return RedirectToAction(nameof(Index));
+           // return View(movie);
         }
       
         [HttpGet]
@@ -55,7 +79,7 @@ namespace MovieData.Controllers
             {
                 return NotFound();
             }
-            MvcMovieContext movie = movieDataAccess.GetMovieData(id);
+            MvcMovieContext movie = Imovie.GetMovieData(id);
 
             if (movie == null)
             {
@@ -74,7 +98,7 @@ namespace MovieData.Controllers
             }
             if (ModelState.IsValid)
             {
-                movieDataAccess.UpdateMovie(movie);
+                Imovie.UpdateMovie(movie);
                 return RedirectToAction("Index", "Movie");
             }
             return View(movie);
@@ -87,7 +111,7 @@ namespace MovieData.Controllers
             {
                 return NotFound();
             }
-            MvcMovieContext movie = movieDataAccess.GetMovieData(id);
+            MvcMovieContext movie = Imovie.GetMovieData(id);
 
             if (movie == null)
             {
@@ -103,7 +127,7 @@ namespace MovieData.Controllers
             {
                 return NotFound();
             }
-            MvcMovieContext movie = movieDataAccess.GetMovieData(id);
+            MvcMovieContext movie = Imovie.GetMovieData(id);
 
             if (movie == null)
             {
@@ -113,11 +137,30 @@ namespace MovieData.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        
         public IActionResult DeleteConfirmed(int? id)
         {
-            movieDataAccess.DeleteMovie(id);
+            Imovie.DeleteMovie(id);
             return RedirectToAction("Index");
+        }
+
+        [Route("logout")]
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Remove("email");
+            return RedirectToAction("Index","Home");
+        }
+
+        public bool checkInvalidSession()
+        {
+            if (HttpContext.Session.GetString("email") == null)
+            {
+                TempData["SessionError"] = "Invalid Session. Login Again";
+                return true;
+            }
+            else
+                return false;
         }
 
     }

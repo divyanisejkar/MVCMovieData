@@ -5,30 +5,62 @@ using System.Threading.Tasks;
 using System.Configuration;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using AutoMapper;
 
 namespace MovieData.Models
 {
-    public class UserDataAccess
+    public class UserDataAccess :IUserDataAcess
     {
         string connectionString = "Server=FSIND-LT-11;Database=DbContext;Trusted_Connection=True";
-        public void addUser(User user)
+        public bool addUser(User user)
         {
-            using (SqlConnection con=new SqlConnection(connectionString))
+            if (CheckUserDetails(user.EmailID).EmailID != user.EmailID)
             {
-                SqlCommand cmd = new SqlCommand("SpAddUser", con);
-                cmd.CommandType = CommandType.StoredProcedure;
+                using (SqlConnection con = new SqlConnection(connectionString))
+                {
+                    SqlCommand cmd = new SqlCommand("SpAddUser", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.AddWithValue("@EmailID", user.EmailID);
-                cmd.Parameters.AddWithValue("@FirstName", user.FirstName);
-                cmd.Parameters.AddWithValue("@LastNAme", user.LastName);
-                cmd.Parameters.AddWithValue("@Password", user.Password);
+                     cmd.Parameters.AddWithValue("@EmailID", user.EmailID);
+                     cmd.Parameters.AddWithValue("@FirstName", user.FirstName);
+                    cmd.Parameters.AddWithValue("@LastNAme", user.LastName);
+                    cmd.Parameters.AddWithValue("@Password", user.Password);
 
-                con.Open();
-                cmd.ExecuteNonQuery();
-                con.Close();
+                   
+
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                    return true;
+                }
+
             }
-
+            else
+            {
+                return false;
+            }
         }
+
+        public User CheckUserDetails(string EmailID)
+        {
+            User user = new User();
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("spCheckUser", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("@EmailID", SqlDbType.VarChar, 30).Value = EmailID;
+                con.Open();
+                SqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    user.EmailID = rdr["EmailID"].ToString();
+                    user.Password = rdr["Password"].ToString();
+                }
+            }
+            return user;
+        }
+
+
         public bool CheckUserLogin(string EmailID, string Password)
         {
 
@@ -82,8 +114,6 @@ namespace MovieData.Models
                 
             }
         }
-
-
 
     }
 }

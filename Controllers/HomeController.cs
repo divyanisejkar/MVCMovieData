@@ -3,19 +3,30 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MovieData.Models;
+using static MovieData.Models.LoginHandler;
+using AutoMapper;
 
 namespace MovieData.Controllers
 {
     public class HomeController : Controller
     {
+        UserDataAccess userDataAccess = new UserDataAccess();
         private readonly ILogger<HomeController> _logger;
+        
+        private readonly IMediator _mediator;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IMapper _mapper;
+        //Constructor Injection
+        public HomeController(ILogger<HomeController> logger, IMediator mediator,IMapper mapper)
         {
             _logger = logger;
+            _mediator = mediator;
+            _mapper = mapper;
         }
 
         public IActionResult Index()
@@ -28,24 +39,29 @@ namespace MovieData.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Login([Bind] User user)
+        public IActionResult Login(User user)
         {
-            UserDataAccess userDataAccess = new UserDataAccess();
+            //UserDataAccess userDataAccess = new UserDataAccess();
 
-            string EmailID = user.EmailID;
-            string Password = user.Password;
+            //string EmailID = user.EmailID;
+            // string Password = user.Password;
 
-            bool success = userDataAccess.CheckUserLogin(EmailID, Password);
-            if (success)
+            //bool success = userDataAccess.CheckUserLogin(EmailID, Password);
+            var result = _mediator.Send(new RequestModel() { EmailID = user.EmailID, Password = user.Password });
+
+            bool success = result.Result.Success;
+
+            if (success == true)
             {
-
-                return RedirectToAction("Index","Movie");
+                HttpContext.Session.SetString("email", user.EmailID);
+                return RedirectToAction("Index", "Movie");
             }
             else
             {
+                ViewBag.error = "Invalid Account";
                 return View("Login");
             }
-                           
+
         }
 
 
@@ -53,19 +69,46 @@ namespace MovieData.Controllers
         {
             return View();
         }
-        
+
+
+        // public ActionResult Register(User user)
+        //{
+
+        // UserDataAccess userDataAccess = new UserDataAccess();
+        // userDataAccess.addUser(user);
+        // return View("Login");
+
+        // }
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Register([Bind] User user)
+        public ActionResult Register(RegisterRequestModel registerRequestModel)
         {
-            if (ModelState.IsValid)
+
+             //bool success = userDataAccess.addUser(user);
+            var result = _mediator.Send(registerRequestModel);
+
+           // bool success = result.Result.Success;
+            if (result.Result.Success)
             {
-                UserDataAccess userDataAccess = new UserDataAccess();
-                userDataAccess.addUser(user);
-                return RedirectToAction("Login");
+                ViewData["EmailID"] = registerRequestModel.EmailID;
+                return View("Login");
             }
-            return View(user);
+            else
+            {
+                ViewData["Error"] = "Registraion Failed User Already Exists";
+                return View();
+            }
         }
+
+
+       // public JsonResult doesUserNameExist(string EmailID)
+        //{
+
+         // var user = userDataAccess.CheckUserDetails(EmailID);
+
+         // return Json(user == null);
+         //}
+
 
         public IActionResult Forgot()
         {
@@ -104,13 +147,17 @@ namespace MovieData.Controllers
         [HttpPost]
         public IActionResult ForgotPassword([Bind] User user)
         {
-            UserDataAccess userDataAccess = new UserDataAccess();
+            // UserDataAccess userDataAccess = new UserDataAccess();
 
-            string EmailID = user.EmailID;
-            string new_pwd = user.new_pwd;
+            // string EmailID = user.EmailID;
+            // string new_pwd = user.new_pwd;
 
 
-            bool success = userDataAccess.NewPassword(EmailID, new_pwd);
+            //bool success = userDataAccess.NewPassword(EmailID, new_pwd);
+           
+            var result = _mediator.Send(new ForgotRequestModel() { EmailID = user.EmailID, new_pwd = user.new_pwd });
+
+            bool success = result.Result.Success;
             if (success == true)
             {
 
@@ -134,5 +181,8 @@ namespace MovieData.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+       
+
+
     }
 }

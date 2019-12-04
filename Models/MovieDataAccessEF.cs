@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MovieData.Models
 {
-    public class MovieDataAcessEF
+    public class MovieDataAcessEF: IMovieDataAccess
     {
         DbContextContext movieAppDBContext;
 

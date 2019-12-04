@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
+﻿using System.Threading.Tasks;
+using MediatR;
+using AutoMapper;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 
 namespace MovieData.Models
 {
-    public class User
+    public class RegisterRequestModel:IRequest<RegisterResponseModel>
     {
-
         [Display(Name = "Email ID")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Email ID required")]
         [DataType(DataType.EmailAddress)]
@@ -35,19 +32,28 @@ namespace MovieData.Models
         [MinLength(6, ErrorMessage = "Minimum 6 characters required")]
         public string Password { get; set; }
 
-        //[Required(AllowEmptyStrings = false, ErrorMessage = "Password is required")]
-        //[DataType(DataType.Password)]
-        //[MinLength(6, ErrorMessage = "Minimum 6 characters required")]
-        //[Compare("old_pwd", ErrorMessage = "old and new Password must match.")]
+    }
+    public class RegisterResponseModel
+    {
+        public bool Success { get; set; }
 
-        public string new_pwd{get; set;}
-
-        //[DataType(DataType.Password)]
-        //[MinLength(6, ErrorMessage = "Minimum 6 characters required")]
-        //[Required(AllowEmptyStrings = false, ErrorMessage = "Password is required")]
-        public string old_pwd { get; set; }
-
-
-
+    }
+    internal class RegistrationHandler : IRequestHandler<RegisterRequestModel, RegisterResponseModel>
+    {
+        IUserDataAcess _userDataAcess;
+       private readonly IMapper _mapper;
+        //Constructor Injection
+        public RegistrationHandler(IMapper mapper,IUserDataAcess userDataAcess)
+        {
+           _userDataAcess = userDataAcess;
+            _mapper = mapper;
+        }
+        public async Task<RegisterResponseModel> Handle(RegisterRequestModel request, CancellationToken cancellationToken)
+        {
+            return new RegisterResponseModel
+            {
+                Success = _userDataAcess.addUser(_mapper.Map<User>(request))
+            };
+        }
     }
 }

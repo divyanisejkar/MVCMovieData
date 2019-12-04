@@ -16,7 +16,7 @@ namespace MovieData.Models
         }
 
         public virtual DbSet<MvcMovieContext> MvcMovieContext { get; set; }
-        public virtual DbSet<UserLogin> UserLogin { get; set; }
+        public virtual DbSet<User> UserLogin { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -46,11 +46,11 @@ namespace MovieData.Models
                     .IsUnicode(false);
             });
 
-            modelBuilder.Entity<UserLogin>(entity =>
+            modelBuilder.Entity<User>(entity =>
             {
                 entity.HasNoKey();
 
-                entity.Property(e => e.EmailId)
+                entity.Property(e => e.EmailID)
                     .IsRequired()
                     .HasColumnName("EmailID")
                     .HasMaxLength(255);

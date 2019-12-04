@@ -5,9 +5,10 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace MovieData.Models
 {
-    public class MovieDataAccess
+    public class MovieDataAccess : IMovieDataAccess
     {
         string connectionString = "Server=FSIND-LT-11;Database=DbContext;Trusted_Connection=True";
 
@@ -113,9 +114,6 @@ namespace MovieData.Models
                 con.Close();
             }
         }
-
-
-
 
     }
 }
