@@ -17,6 +17,19 @@ namespace MovieData.Models
             CreateMap<MvcMovieContext, GetAllMoviesRequest>();
             CreateMap<GetAllMoviesRequest, MvcMovieContext>();
 
+            CreateMap<MvcMovieContext, AddMovieRequest>();
+            CreateMap<AddMovieRequest, MvcMovieContext>();
+
+            CreateMap<MvcMovieContext, EditMovieRequest>();
+            CreateMap<EditMovieRequest, MvcMovieContext>();
+
+            CreateMap<EditMovieRequest, GetMovieDataResponse>();
+            CreateMap<GetMovieDataResponse, EditMovieRequest>();
+
+            CreateMap<MvcMovieContext, GetMovieDataResponse>();
+            CreateMap<GetMovieDataResponse, MvcMovieContext>();
+
+
         }
 
     }

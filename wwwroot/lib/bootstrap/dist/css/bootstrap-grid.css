@@ -5,8 +5,9 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 html {
-  box-sizing: border-box;
-  -ms-overflow-style: scrollbar;
+    box-sizing: border-box;
+    -ms-overflow-style: scrollbar;
+    
 }
 
 *,
@@ -16,11 +17,12 @@ html {
 }
 
 .container {
-  width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+   
 }
 
 @media (min-width: 576px) {

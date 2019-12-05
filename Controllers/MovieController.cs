@@ -18,13 +18,15 @@ namespace MovieData.Controllers
         // MovieDataAccess movieDataAccess = new MovieDataAccess();
 
        private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
         
-        IMovieDataAccess Imovie;
+      // IMovieDataAccess Imovie;
 
-        public MovieController(DbContextContext dbContext, IMediator mediator)
+        public MovieController(IMapper mapper, IMediator mediator)
         {
-            Imovie = new MovieDataAccess();
+            //Imovie = new MovieDataAccess();
             _mediator = mediator;
+            _mapper = mapper;
         }
           
 
@@ -35,17 +37,15 @@ namespace MovieData.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            // var result = _mediator.Send(new GetAllMoviesRequest());
-
-            // List<MvcMovieContext> sucess= result.Result.Success;
+            
 
             return View(_mediator.Send(new GetAllMoviesRequest()).Result.Success);
 
 
-          /*  List<MvcMovieContext> lstMovie = new List<MvcMovieContext>();
-            lstMovie = Imovie.GetAllMovies();
+            //List<MvcMovieContext> lstMovie = new List<MvcMovieContext>();
+            //lstMovie = Imovie.GetAllMovies();
 
-            return View(lstMovie);*/
+            //return View(lstMovie);
 
         }
         [HttpGet]
@@ -60,51 +60,57 @@ namespace MovieData.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind] MvcMovieContext movie)
+        public IActionResult Create(AddMovieRequest movie)
         {
-           // MovieDataAccess movieDataAccess = new MovieDataAccess();
-            if (checkInvalidSession())
+           
+          /*  if (checkInvalidSession())
             {
                 return RedirectToAction("Home","Index");
             }
-            Imovie.AddMovie(movie);
-            return RedirectToAction(nameof(Index));
-           // return View(movie);
+             Imovie.AddMovie(movie);
+             return RedirectToAction(nameof(Index));
+            // return View(movie);*/
+            if (ModelState.IsValid)
+            {
+                _mediator.Send(movie);
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return View(movie);
+            }
         }
       
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            MvcMovieContext movie = Imovie.GetMovieData(id);
+            /*  if (id == null)
+              {
+                  return NotFound();
+              }
+              MvcMovieContext movie = Imovie.GetMovieData(id);
 
-            if (movie == null)
-            {
-                return NotFound();
-            }
-            return View(movie);
+              if (movie == null)
+              {
+                  return NotFound();
+              }
+              return View(movie);*/
+            var movie = _mediator.Send(new GetMovieDataRequest { Id = id });
+            return View(_mapper.Map<MvcMovieContext>(movie.Result));
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind]MvcMovieContext movie)
+        
+        public IActionResult Edit( EditMovieRequest movie)
         {
-            if (id != movie.Id)
-            {
-                return NotFound();
-            }
-            if (ModelState.IsValid)
-            {
-                Imovie.UpdateMovie(movie);
+            
+                _mediator.Send(movie);
+                //Imovie.UpdateMovie(movie);
                 return RedirectToAction("Index", "Movie");
-            }
-            return View(movie);
+         
         }
 
-        [HttpGet]
+      /*  [HttpGet]
         public IActionResult Detail(int? id)
         {
             if (id == null)
@@ -118,10 +124,10 @@ namespace MovieData.Controllers
                 return NotFound();
             }
             return View(movie);
-        }
+        }*/
 
-        [HttpGet]
-        public IActionResult Delete(int? id)
+      
+       /* public IActionResult Delete(int? id)
         {
             if (id == null)
             {
@@ -134,13 +140,15 @@ namespace MovieData.Controllers
                 return NotFound();
             }
             return View(movie);
-        }
+        }*/
 
         [HttpPost, ActionName("Delete")]
         
-        public IActionResult DeleteConfirmed(int? id)
+        public IActionResult Delete(int? id)
         {
-            Imovie.DeleteMovie(id);
+            // Imovie.DeleteMovie(id);
+            _mediator.Send(new DeleteMovieRequest { Id = id });
+
             return RedirectToAction("Index");
         }
 

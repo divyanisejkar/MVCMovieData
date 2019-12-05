@@ -9,8 +9,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MovieData.Models
 {
-    public class AddMovieRequest:IRequest<AddMovieResponse>
+    public class GetMovieDataRequest:IRequest<GetMovieDataResponse>
     {
+        public int? Id { get; set; }
+        
+    }
+    public class GetMovieDataResponse
+    {
+        public int Id { get; set; }
         [Required(ErrorMessage = "Enter Movie Title")]
         public string Title { get; set; }
         [Required(ErrorMessage = "Enter Movie Genre")]
@@ -19,31 +25,21 @@ namespace MovieData.Models
         [Range(1990, 2060)]
 
         public string ReleseDate { get; set; }
-
     }
-    public class AddMovieResponse
-    {
-        public bool Success { get; set; }
-    }
-    internal class AddMovieHandler : IRequestHandler<AddMovieRequest, AddMovieResponse>
+    internal class GetMovieDataHandler : IRequestHandler<GetMovieDataRequest, GetMovieDataResponse>
     {
         IMovieDataAccess _movieDataAccess;
         IMapper _mapper;
-        public AddMovieHandler(IMovieDataAccess movieDataAccess,IMapper mapper)
+        public GetMovieDataHandler(IMovieDataAccess movieDataAccess, IMapper mapper)
         {
             _movieDataAccess = movieDataAccess;
             _mapper = mapper;
-            
-
         }
-        public async Task<AddMovieResponse> Handle(AddMovieRequest request, CancellationToken cancellationToken)
+
+        public async Task<GetMovieDataResponse> Handle(GetMovieDataRequest request, CancellationToken cancellationToken)
         {
-            _movieDataAccess.AddMovie(_mapper.Map<MvcMovieContext>(request));
-            return new AddMovieResponse
-            {
-                Success = true
-            };
-            
+            var movie = _mapper.Map<GetMovieDataResponse>(_movieDataAccess.GetMovieData(request.Id));
+            return movie;
         }
     }
 }
