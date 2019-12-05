@@ -12,9 +12,7 @@ namespace MovieData.Models
     public class DeleteMovieRequest:IRequest<DeleteMovieResponse>
     {
         public int? Id { get; set; }
-        
-        
-
+    
     }
     public class DeleteMovieResponse
     {

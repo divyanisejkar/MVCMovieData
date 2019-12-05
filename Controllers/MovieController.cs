@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MovieData.Models;
@@ -20,11 +17,11 @@ namespace MovieData.Controllers
        private readonly IMediator _mediator;
         private readonly IMapper _mapper;
         
-      // IMovieDataAccess Imovie;
+       IMovieDataAccess Imovie;
 
-        public MovieController(IMapper mapper, IMediator mediator)
+        public MovieController(DbContextContext context,IMapper mapper, IMediator mediator)
         {
-            //Imovie = new MovieDataAccess();
+            Imovie = new MovieDataAccess();
             _mediator = mediator;
             _mapper = mapper;
         }
@@ -110,7 +107,7 @@ namespace MovieData.Controllers
          
         }
 
-      /*  [HttpGet]
+        [HttpGet]
         public IActionResult Detail(int? id)
         {
             if (id == null)
@@ -124,7 +121,7 @@ namespace MovieData.Controllers
                 return NotFound();
             }
             return View(movie);
-        }*/
+        }
 
       
        /* public IActionResult Delete(int? id)
@@ -142,13 +139,20 @@ namespace MovieData.Controllers
             return View(movie);
         }*/
 
+          public IActionResult Delete(int? id)
+        {
+            var movie = _mediator.Send(new GetMovieDataRequest { Id = id });
+
+            return View(_mapper.Map<MvcMovieContext>(movie.Result));
+        }
+
+
         [HttpPost, ActionName("Delete")]
         
-        public IActionResult Delete(int? id)
+        public IActionResult DeleteConfirmed(int? id)
         {
             // Imovie.DeleteMovie(id);
             _mediator.Send(new DeleteMovieRequest { Id = id });
-
             return RedirectToAction("Index");
         }
 

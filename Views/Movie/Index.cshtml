@@ -4,6 +4,7 @@
 
 @{
     ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMovie.cshtml";
 }
 @using Microsoft.AspNetCore.Http;
 <div>
@@ -12,7 +13,7 @@
 
 <h2>Index</h2>
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="btn btn-info" asp-action="Create">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -43,9 +44,9 @@
                     @Html.DisplayFor(modelItem => item.ReleseDate)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Detail" asp-route-id="@item.Id">Detail</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a class="btn btn-info"  asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a class="btn btn-primary" asp-action="Detail" asp-route-id="@item.Id">Detail</a> |
+                    <a class="btn btn-danger"  asp-controller="Movie" asp-action="Delete"  asp-route-id="@item.Id">Delete</a>
                 </td>
             </tr>
 
@@ -55,8 +56,9 @@
 </table>
 <div>
     Welcome <h6><strong> @Context.Session.GetString("email")</strong></h6>
+
+    <a class="btn btn-info" asp-controller="Movie" asp-action="logout">Logout</a>
     
-    <a asp-controller="Movie" asp-action="logout">Logout</a>
 
 </div>
 

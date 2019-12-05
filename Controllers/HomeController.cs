@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using MovieData.Models;
 using static MovieData.Models.LoginHandler;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MovieData.Controllers
 {
@@ -17,12 +18,12 @@ namespace MovieData.Controllers
     {
         UserDataAccess userDataAccess = new UserDataAccess();
         private readonly ILogger<HomeController> _logger;
-        
+
         private readonly IMediator _mediator;
 
         private readonly IMapper _mapper;
         //Constructor Injection
-        public HomeController(ILogger<HomeController> logger, IMediator mediator,IMapper mapper)
+        public HomeController(ILogger<HomeController> logger, IMediator mediator, IMapper mapper)
         {
             _logger = logger;
             _mediator = mediator;
@@ -33,13 +34,14 @@ namespace MovieData.Controllers
         {
             return View();
         }
-
+       
         public IActionResult Login()
         {
             return View();
         }
         [HttpPost]
-        public IActionResult Login(User user)
+       
+        public IActionResult Login(RequestModel user)
         {
             //UserDataAccess userDataAccess = new UserDataAccess();
 
@@ -145,7 +147,7 @@ namespace MovieData.Controllers
         }
 
         [HttpPost]
-        public IActionResult ForgotPassword([Bind] User user)
+        public IActionResult ForgotPassword([Bind] ForgotRequestModel user)
         {
             // UserDataAccess userDataAccess = new UserDataAccess();
 

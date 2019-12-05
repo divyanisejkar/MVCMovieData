@@ -11,8 +11,10 @@ namespace MovieData.Models
     {
         public AutoMapping()
         {
-            CreateMap<User, RegisterRequestModel>();
-            CreateMap<RegisterRequestModel, User>();
+            CreateMap<User, RegisterRequestModel>().ReverseMap(); 
+            
+
+           // CreateMap<RegisterRequestModel, User>();
 
             CreateMap<MvcMovieContext, GetAllMoviesRequest>();
             CreateMap<GetAllMoviesRequest, MvcMovieContext>();
@@ -28,7 +30,6 @@ namespace MovieData.Models
 
             CreateMap<MvcMovieContext, GetMovieDataResponse>();
             CreateMap<GetMovieDataResponse, MvcMovieContext>();
-
 
         }
 

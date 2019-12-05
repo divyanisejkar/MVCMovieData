@@ -111,6 +111,7 @@ namespace MovieData.Models
 
                 con.Open();
                 cmd.ExecuteNonQuery();
+                cmd.Dispose();
                 con.Close();
             }
         }
