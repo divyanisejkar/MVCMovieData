@@ -18,6 +18,7 @@ namespace MovieData.Models
 
         public void AddMovie(MvcMovieContext movie)
         {
+           
             movieAppDBContext.Add(movie);
             movieAppDBContext.SaveChanges();
         }

@@ -42,6 +42,19 @@ namespace MovieData.Models
 
         public void AddMovie(MvcMovieContext movie)
         {
+            if (string.IsNullOrEmpty(movie.Title))
+            {
+                throw new ArgumentNullException(movie.Title);
+
+            }
+            else if(string.IsNullOrEmpty(movie.Genre))
+            {
+                throw new ArgumentNullException(movie.Genre);
+            }
+            else if(Convert.ToInt32(movie.ReleseDate) < 1990 ||Convert.ToInt32(movie.ReleseDate)>2060)
+            {
+                throw new ArgumentOutOfRangeException(movie.ReleseDate);
+            }
             using (SqlConnection con = new SqlConnection(connectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpMovie1", con);
