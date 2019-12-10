@@ -17,7 +17,6 @@ namespace MovieData.Models
         public string Genre { get; set; }
 
         [Range(1990, 2060)]
-
         public string ReleseDate { get; set; }
 
     }

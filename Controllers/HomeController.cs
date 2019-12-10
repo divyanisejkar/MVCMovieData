@@ -40,16 +40,9 @@ namespace MovieData.Controllers
             return View();
         }
         [HttpPost]
-       
         public IActionResult Login(RequestModel user)
         {
-            //UserDataAccess userDataAccess = new UserDataAccess();
-
-            //string EmailID = user.EmailID;
-            // string Password = user.Password;
-
-            //bool success = userDataAccess.CheckUserLogin(EmailID, Password);
-            var result = _mediator.Send(new RequestModel() { EmailID = user.EmailID, Password = user.Password });
+            var result = _mediator.Send(new RequestModel(){ EmailID = user.EmailID, Password = user.Password });
 
             bool success = result.Result.Success;
 
@@ -66,21 +59,10 @@ namespace MovieData.Controllers
 
         }
 
-
         public IActionResult Register()
         {
             return View();
         }
-
-
-        // public ActionResult Register(User user)
-        //{
-
-        // UserDataAccess userDataAccess = new UserDataAccess();
-        // userDataAccess.addUser(user);
-        // return View("Login");
-
-        // }
 
         [HttpPost]
         public ActionResult Register(RegisterRequestModel registerRequestModel)
@@ -116,7 +98,7 @@ namespace MovieData.Controllers
         {
             return View();
         }
-
+/*
         [HttpPost]
         public IActionResult Forgot([Bind] User user)
         {
@@ -139,7 +121,7 @@ namespace MovieData.Controllers
             }
 
 
-        }
+        }*/
 
         public IActionResult ForgotPassword()
         {

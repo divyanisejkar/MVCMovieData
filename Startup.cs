@@ -38,7 +38,7 @@ namespace MovieData
             //Added interface to the DI container
             //Everytime for request new instance will be created
             services.AddTransient<IUserDataAcess, UserDataAccess>();
-            services.AddTransient<IMovieDataAccess, MovieDataAccess>();
+            services.AddTransient<IMovieDataAccess, MovieDataAcessEF>();
             services.AddAutoMapper(typeof(Startup));
 
             services.AddSession(options =>

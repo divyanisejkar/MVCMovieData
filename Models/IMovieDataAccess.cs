@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace MovieData.Models
 {
-    interface IMovieDataAccess
+   public interface IMovieDataAccess
     {
         public List<MvcMovieContext> GetAllMovies();
 
-        public void AddMovie(MvcMovieContext movie);
+        public bool AddMovie(MvcMovieContext movie);
         public void UpdateMovie(MvcMovieContext movie);
 
         public MvcMovieContext GetMovieData(int? id);

@@ -10,17 +10,18 @@ namespace MovieData.Models
     public class MovieDataAcessEF: IMovieDataAccess
     {
         DbContextContext movieAppDBContext;
-
+        //MovieDataAcessEF has a dependency on 
         public MovieDataAcessEF(DbContextContext context)
         {
             movieAppDBContext = context;
         }
 
-        public void AddMovie(MvcMovieContext movie)
+        public bool AddMovie(MvcMovieContext movie)
         {
            
             movieAppDBContext.Add(movie);
             movieAppDBContext.SaveChanges();
+            return true;
         }
 
         public List<MvcMovieContext> GetAllMovies()

@@ -14,6 +14,7 @@ namespace MovieData.Models
 
         public List<MvcMovieContext> GetAllMovies()
         {
+            
             List<MvcMovieContext> lstMovie = new List<MvcMovieContext>();
 
             using (SqlConnection con = new SqlConnection(connectionString))
@@ -40,7 +41,7 @@ namespace MovieData.Models
             return lstMovie;
         }
 
-        public void AddMovie(MvcMovieContext movie)
+        public bool AddMovie(MvcMovieContext movie)
         {
             if (string.IsNullOrEmpty(movie.Title))
             {
@@ -68,6 +69,7 @@ namespace MovieData.Models
                 con.Open();
                 cmd.ExecuteNonQuery();
                 con.Close();
+                return true;
             }
         }
         public void UpdateMovie(MvcMovieContext movie)

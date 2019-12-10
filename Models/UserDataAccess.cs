@@ -25,9 +25,6 @@ namespace MovieData.Models
                      cmd.Parameters.AddWithValue("@FirstName", user.FirstName);
                     cmd.Parameters.AddWithValue("@LastNAme", user.LastName);
                     cmd.Parameters.AddWithValue("@Password", user.Password);
-
-                   
-
                     con.Open();
                     cmd.ExecuteNonQuery();
                     con.Close();
@@ -60,7 +57,6 @@ namespace MovieData.Models
             return user;
         }
 
-
         public bool CheckUserLogin(string EmailID, string Password)
         {
 
@@ -77,7 +73,7 @@ namespace MovieData.Models
 
             }
         }
-
+/*
         public bool CheckPassword(string EmailID, string old_pwd, string new_pwd)
         {
             using (SqlConnection con=new SqlConnection(connectionString))
@@ -96,7 +92,7 @@ namespace MovieData.Models
 
             }
         }
-
+        */
         public bool NewPassword(string EmailID, string new_pwd)
         {
             using (SqlConnection con = new SqlConnection(connectionString))

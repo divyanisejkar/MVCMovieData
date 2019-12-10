@@ -13,7 +13,7 @@ namespace MovieData.Models
 
         public bool CheckUserLogin(string EmailID, string Password);
 
-        public bool CheckPassword(string EmailID, string old_pwd, string new_pwd);
+       // public bool CheckPassword(string EmailID, string old_pwd, string new_pwd);
 
         public bool NewPassword(string EmailID, string new_pwd);
        

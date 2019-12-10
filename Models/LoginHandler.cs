@@ -29,8 +29,7 @@ namespace MovieData.Models
 
         public async Task<ResponseModel> Handle(RequestModel request, CancellationToken cancellationToken)
         {
-            UserDataAccess userDataAccess = new UserDataAccess();
-            
+            UserDataAccess userDataAccess = new UserDataAccess();  
             bool success = userDataAccess.CheckUserLogin(request.EmailID,request.Password);
             return new ResponseModel() { Success = success, ResponseText = "Login Successfull" };
            
